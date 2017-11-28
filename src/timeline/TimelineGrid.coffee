@@ -597,6 +597,18 @@ class TimelineGrid extends Grid
 			nonLastSlotWidth = slotWidth
 
 			availableWidth = @bodyScroller.getClientWidth()
+
+			#[JB]
+			#If the view options includes visible optons then we need to allow for more space in the div
+			if (@view.options.hasOwnProperty("visibleOptions")) {
+				#Get the visible options from the view
+				visibleOptions = @view.options.visibleOptions
+				#Ratio of data to display on the screen, total number of slots / the range that the user wants to see
+				ratio = @slotDates.length / visibleOptions.visibleRange
+				#Set the available room to the ratio
+				availableWidth = availableWidth * ratio
+			}
+
 			if availableWidth > containerWidth
 				containerMinWidth = availableWidth
 				containerWidth = ''
@@ -772,7 +784,11 @@ class TimelineGrid extends Grid
 		# assign seg verticals
 		for [ container, segs ] in pairs
 			for seg in segs
-				seg.el.css('top', seg.top)
+			#jb
+				len = HourlyAvailabilityLayer.updateRenderTopParameter(container.fgSegs, seg) - 1
+        		seg.top = len
+        		seg.el.css('top', len)
+				#seg.el.css('top', seg.top)
 			container.segContainerEl.height(container.segContainerHeight)
 
 
