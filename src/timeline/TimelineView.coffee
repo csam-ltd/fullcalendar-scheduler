@@ -550,6 +550,18 @@ class TimelineView extends View
 			nonLastSlotWidth = slotWidth
 
 			availableWidth = @timeBodyScroller.getClientWidth()
+
+			#[JB]
+			#If the view options includes visible optons then we need to allow for more space in the div
+			if (@view.options.hasOwnProperty("visibleOptions")) {
+				#Get the visible options from the view
+				visibleOptions = @view.options.visibleOptions
+				#Ratio of data to display on the screen, total number of slots / the range that the user wants to see
+				ratio = @slotDates.length / visibleOptions.visibleRange
+				#Set the available room to the ratio
+				availableWidth = availableWidth * ratio
+			}
+
 			if availableWidth > containerWidth
 				containerMinWidth = availableWidth
 				containerWidth = ''
