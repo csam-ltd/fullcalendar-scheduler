@@ -438,6 +438,8 @@ class ResourceTimelineView extends TimelineView
 			row = @getResourceRow(resourceId)
 
 			if row
+				#Adds all the resources that are currently being worked on to watchers
+				@_watchers.resourcesServiced = payloadsByResourceId
 				row.executeEventRender(resourceEventsPayload)
 
 		return

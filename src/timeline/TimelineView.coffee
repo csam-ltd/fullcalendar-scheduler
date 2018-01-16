@@ -706,7 +706,7 @@ class TimelineView extends View
 			seg.el.css
 				left: (seg.left = coords.left)
 				right: -(seg.right = coords.right)
-			    top: 10 // hourly availability layer requires extra height
+			    top: seg.top ? seg.top + 8 : 10 # hourly availability layer requires extra height
 		return
 
 

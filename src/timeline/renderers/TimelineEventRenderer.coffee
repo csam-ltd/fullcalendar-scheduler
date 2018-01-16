@@ -44,7 +44,8 @@ class TimelineEventRenderer extends EventRenderer
 		for seg in segs
 			seg.el.css('top', seg.top)
 
-		@component.segContainerEl.height(@component.segContainerHeight)
+	    # Adding on 20 pixels, as per cura design
+		@component.segContainerEl.height(@component.segContainerHeight + 20)
 
 		for seg in segs
 			titleEl = seg.el.find('.fc-title')
