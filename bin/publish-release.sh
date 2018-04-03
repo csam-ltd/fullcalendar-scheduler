@@ -11,12 +11,12 @@ cd "`dirname $0`/.."
 read -p "Enter the version you want to publish, with no 'v' (for example '1.0.1'): " version
 if [[ ! "$version" ]]
 then
-	echo "Aborting."
-	exit 1
+  echo "Aborting."
+  exit 1
 fi
 
 # push the current branch (assumes tracking is set up) and the tag
-git push
+git push --recurse-submodules=on-demand
 git push origin "v$version"
 
 success=0
@@ -28,7 +28,7 @@ current_branch=$(git symbolic-ref --quiet --short HEAD)
 git checkout --quiet "v$version"
 if npm publish
 then
-	success=1
+  success=1
 fi
 
 # return to branch
@@ -40,9 +40,21 @@ git reset --quiet -- dist
 
 if [[ "$success" == "1" ]]
 then
-	./bin/verify-npm.sh
-	echo "Success."
+  echo "Waiting for release to propagate to NPM..."
+  sleep 10
+
+  ./bin/verify-npm.sh
+
+  echo
+  echo 'Success.'
+  echo 'You can now run:'
+  echo '  ./bin/update-example-repo-deps.sh &&'
+  echo '  git push --recurse-submodules=on-demand &&'
+  echo '  ./bin/build-example-repos.sh --recent-release'
+  echo
 else
-	echo "Failure."
-	exit 1
+  echo
+  echo 'Failure.'
+  echo
+  exit 1
 fi

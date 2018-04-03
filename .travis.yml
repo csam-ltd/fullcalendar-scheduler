@@ -1,3 +1,6 @@
+
+sudo: false # route build to the container-based infrastructure for a faster build
+
 language: node_js
 node_js:
   - 'node' # implies latest version
@@ -5,9 +8,13 @@ node_js:
 cache:
   directories:
     - node_modules
-    - fullcalendar
+    - fullcalendar # a checkout of the core repo
 
-before_install: bin/travis-before-install.sh
-before_script: bin/travis-before-script.sh
+before_install: bin/install-core-repo.sh
 
-script: npm run test
+env:
+  - CMD=lint
+  - CMD=test
+  - CMD=test-side-effects
+
+script: npm run $CMD -- --travis
