@@ -636,7 +636,20 @@ export default class TimelineView extends View {
       containerMinWidth = ''
       nonLastSlotWidth = slotWidth
 
-      const availableWidth = this.timeBodyScroller.getClientWidth()
+      let availableWidth = this.timeBodyScroller.getClientWidth()
+
+      // [CSAM]
+      // TODO: Review for refactoring, we may be able to use the FC visibleRange
+      // If the view options includes visible optons then we need to allow for more space in the div
+      if (this.opt('visibleOptions')) {
+				// Get the visible options from the view
+        const visibleOptions = this.opt('visibleOptions')
+				// Ratio of data to display on the screen, total number of slots / the range that the user wants to see
+        const ratio = this.slotDates.length / visibleOptions.visibleRange
+				// Set the available room to the ratio
+        availableWidth = availableWidth * ratio
+      }
+
       if (availableWidth > containerWidth) {
         containerMinWidth = availableWidth
         containerWidth = ''
@@ -803,7 +816,8 @@ export default class TimelineView extends View {
       const coords = this.rangeToCoords(seg)
       seg.el.css({
         left: (seg.left = coords.left),
-        right: -(seg.right = coords.right)
+        right: -(seg.right = coords.right),
+        top: seg.top ? seg.top + 8 : 10 //  [CSAM] hourly availability layer requires extra height
       })
     }
   }

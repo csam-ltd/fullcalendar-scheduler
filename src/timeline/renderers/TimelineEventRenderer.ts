@@ -55,7 +55,10 @@ export default class TimelineEventRenderer extends EventRenderer {
       seg.el.css('top', seg.top)
     }
 
-    this.component.segContainerEl.height(this.component.segContainerHeight)
+    // [CSAM]
+    // TODO: Look into rendering addtional data upfront
+    // Adding on 20 pixels, as per cura design
+    this.component.segContainerEl.height(this.component.segContainerHeight + 20)
 
     for (let seg of segs) {
       const titleEl = seg.el.find('.fc-title')

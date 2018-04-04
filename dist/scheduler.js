@@ -929,6 +929,17 @@ var TimelineView = /** @class */ (function (_super) {
             containerMinWidth = '';
             nonLastSlotWidth = slotWidth;
             var availableWidth = this.timeBodyScroller.getClientWidth();
+            // [CSAM]
+            // TODO: Review for refactoring, we may be able to use the FC visibleRange
+            // If the view options includes visible optons then we need to allow for more space in the div
+            if (this.opt('visibleOptions')) {
+                // Get the visible options from the view
+                var visibleOptions = this.opt('visibleOptions');
+                // Ratio of data to display on the screen, total number of slots / the range that the user wants to see
+                var ratio = this.slotDates.length / visibleOptions.visibleRange;
+                // Set the available room to the ratio
+                availableWidth = availableWidth * ratio;
+            }
             if (availableWidth > containerWidth) {
                 containerMinWidth = availableWidth;
                 containerWidth = '';
@@ -1064,7 +1075,8 @@ var TimelineView = /** @class */ (function (_super) {
             var coords = this.rangeToCoords(seg);
             seg.el.css({
                 left: (seg.left = coords.left),
-                right: -(seg.right = coords.right)
+                right: -(seg.right = coords.right),
+                top: seg.top ? seg.top + 8 : 10 //  [CSAM] hourly availability layer requires extra height
             });
         }
     };
@@ -1389,7 +1401,10 @@ var TimelineEventRenderer = /** @class */ (function (_super) {
             var seg = segs_4[_c];
             seg.el.css('top', seg.top);
         }
-        this.component.segContainerEl.height(this.component.segContainerHeight);
+        // [CSAM]
+        // TODO: Look into rendering addtional data upfront
+        // Adding on 20 pixels, as per cura design
+        this.component.segContainerEl.height(this.component.segContainerHeight + 20);
         for (var _d = 0, segs_5 = segs; _d < segs_5.length; _d++) {
             var seg = segs_5[_d];
             var titleEl = seg.el.find('.fc-title');
@@ -3374,6 +3389,9 @@ var ResourceTimelineView = /** @class */ (function (_super) {
             var resourceEventsPayload = payloadsByResourceId[resourceId];
             var row = this.getResourceRow(resourceId);
             if (row) {
+                // [CSAM]
+                // Adds all the resources that are currently being worked on to watchers
+                this._watchers.resourcesServiced = payloadsByResourceId;
                 row.executeEventRender(resourceEventsPayload);
             }
         }

@@ -542,6 +542,9 @@ export default class ResourceTimelineView extends TimelineView {
       const row = this.getResourceRow(resourceId)
 
       if (row) {
+        // [CSAM]
+        // Adds all the resources that are currently being worked on to watchers
+        this._watchers.resourcesServiced = payloadsByResourceId
         row.executeEventRender(resourceEventsPayload)
       }
     }
