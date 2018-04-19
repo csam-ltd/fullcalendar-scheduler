@@ -816,7 +816,8 @@ export default class TimelineView extends View {
       const coords = this.rangeToCoords(seg)
       seg.el.css({
         left: (seg.left = coords.left),
-        right: -(seg.right = coords.right)
+        right: -(seg.right = coords.right),
+        top: seg.top ? seg.top + 8 : 10 //  [CSAM] add some addtional space to the to of the segment
       })
     }
   }
