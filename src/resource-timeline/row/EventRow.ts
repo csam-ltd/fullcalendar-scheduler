@@ -16,10 +16,23 @@ export default class EventRow extends RowParent {
   renderEventSkeleton(tr) {
     const { theme } = this.view.calendar
 
+    // [CSAM]
+    // Allow injecting some markup into the resource container
+    // This is a function to allow DOM manipulation if required
+    const resourceMarkup = this.view.calendar.view.options.resourceMarkup
+
+    let addtionalMarkup
+    if (resourceMarkup != null && typeof(resourceMarkup) === typeof(Function)) {
+      addtionalMarkup = resourceMarkup()
+    } else {
+      addtionalMarkup = ''
+    }
+
     tr.html(`\
 <td class="` + theme.getClass('widgetContent') + `"> \
-<div> \
-<div class="fc-event-container" /> \
+<div>` +
+addtionalMarkup +
+`<div class="fc-event-container test" /> \
 </div> \
 </td>\
 `)
